@@ -31,6 +31,9 @@ Always include an "I'm not sure - show me ideas" path.
    Vary the query (mood words, `--variance`, `--density`) to get genuinely
    different directions, not three shades of one.
 2. **Show real-world references.**
+   - First stop: the `aura-style-library` skill. Pick 3-4 matching styles from
+     its `INDEX.md`, show their `preview.jpg` screenshots, and give the Aura
+     link for each so the user can open the live page.
    - If the Mobbin tools are available (`mcp__Mobbin__search_screens`,
      `search_flows`, `search_sections`), pull real app screens matching each
      direction and show them.
@@ -54,9 +57,12 @@ Always include an "I'm not sure - show me ideas" path.
 | Concern | Skill | Notes |
 | --- | --- | --- |
 | Taste / aesthetic direction | `frontend-design` | Commit to one direction; no generic gradients/three-card defaults. |
-| Palettes, fonts, style data | `ui-ux-pro-max` | The single style engine. Do not mix in other style packs. |
+| Palettes, fonts, style data | `ui-ux-pro-max` | The single source for palette and font data. |
+| Named looks & effects (Aura) | `aura-style-library` | One page style per design, plus effects as needed. Show previews before building. |
 | Product UI consistency | `interface-design` | Save decisions to `.interface-design/system.md` and reuse them every session. |
 | Motion & feel | `emil-design-eng`, `animate`, `find-animation-opportunities`, `review-animations` | Add motion only where it helps. |
+| GSAP / scroll animation | `gsap-core`, `gsap-timeline`, `gsap-scrolltrigger`, `gsap-plugins`, `gsap-react`, `gsap-performance` | Official GreenSock guidance; many Aura effects use GSAP. |
+| Detail polish | `make-interfaces-feel-better` | Shadows, borders, type, icons, micro-interactions. |
 | Comparing variants | `prototype` | Several versions behind a switcher. |
 | Seeing the result | `webapp-testing` (Playwright) | Screenshot desktop + phone width; fix overlaps before showing. |
 | Pre-ship check | `web-design-guidelines` | Accessibility, focus, forms, dark mode, layout shift. |

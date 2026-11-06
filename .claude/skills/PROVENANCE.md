@@ -27,7 +27,40 @@ credential/secret access, telemetry, outbound URLs, and install commands.
 | emil-design-eng, animate, find-animation-opportunities, review-animations, prototype | emilkowalski/skills `c8a79627` | MIT | none | other 12 skills in the pack not installed (Swift/Expo/native or overlapping) |
 | design-discovery | written for this repo | - | none | owner's visual-first workflow |
 
+| aura-style-library (81 styles) | MengTo/Skills `5ea1661a` (`agent-skills/web-design`, `agent-skills/ui`) | MIT | none installed | each style's `SKILL.md` renamed `STYLE.md` and grouped under one skill with a generated `INDEX.md`; kept `REFERENCES.md`, `ARTICLE.md`, `demo/PROMPT.md`, `demo/preview.jpg`, Markdown references; dropped runnable demos and asset images |
+| gsap-core, gsap-timeline, gsap-scrolltrigger, gsap-plugins, gsap-react, gsap-performance | greensock/gsap-skills `aed9cfd3` | MIT | none | `gsap-utils` and `gsap-frameworks` not installed |
+| make-interfaces-feel-better | jakubkrehel/make-interfaces-feel-better `35545ea1` | MIT | none | dropped unused `agents/openai.yaml` |
+
 Findings: no malicious or suspicious content in any installed folder.
+
+### Aura Skills section review (2026-11-06)
+
+https://www.aura.build/skills listed 194 skills. 77 come from MengTo/Skills
+(Aura's founder), 73 from other GitHub repos, and 44 have no GitHub source
+(uploaded directly to Aura, including persona/"identity file" entries). Only
+skills with a public, reviewable source were considered.
+
+MengTo/Skills demo pages (`demo/index.html`) were decoded and inspected: each
+wraps a base64-encoded page in a sandboxed iframe (`sandbox="allow-scripts"`)
+with a CSP of `connect-src 'none'`; the decoded pages load only Google Fonts
+and Fontshare, plus a few image/video links. No eval, cookies, storage, beacons
+or sockets. Bundled runtime libraries in `assets/runtime/` were hashed against
+npm: GSAP 3.12.2/3.12.5, ScrollTrigger and Draggable builds matched
+the official releases byte-for-byte; `runtime-ccc8894b3418-runtime.js` (407 KB
+minified, origin unknown) and one Three.js and one Iconify build did **not**
+match. The demos were therefore not installed, though they are sandboxed.
+
+Not installed from MengTo/Skills `web-design`: skills with scripts
+(add-shader-cursor-trail, html-demo, threejs-towers, add-mouse-driven-orbit,
+build-interactive-particle-trail, build-wireframe-scan-reveal, threejs-weather,
+threejs-landscape, build-threejs-scroll-worlds, scroll-world-storytelling) and
+skills that tell the agent to `npm install` unreviewed third-party packages
+(beam-glow-states, thinking-orbs, shaders-cursor-ripples, liquid-metal-border).
+Other categories (games, 3D, social posting, TTS, image generation) are out of
+scope.
+
+ibelick/ui-skills `00db7d65` was reviewed (Markdown only, clean) but not
+installed because it overlaps web-design-guidelines and interface-design.
 
 ## Considered and not installed
 

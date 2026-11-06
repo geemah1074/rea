@@ -27,7 +27,7 @@ credential/secret access, telemetry, outbound URLs, and install commands.
 | emil-design-eng, animate, find-animation-opportunities, review-animations, prototype | emilkowalski/skills `c8a79627` | MIT | none | other 12 skills in the pack not installed (Swift/Expo/native or overlapping) |
 | design-discovery | written for this repo | - | none | owner's visual-first workflow |
 
-| aura-style-library (81 styles) | MengTo/Skills `5ea1661a` (`agent-skills/web-design`, `agent-skills/ui`) | MIT | none installed | each style's `SKILL.md` renamed `STYLE.md` and grouped under one skill with a generated `INDEX.md`; kept `REFERENCES.md`, `ARTICLE.md`, `demo/PROMPT.md`, `demo/preview.jpg`, Markdown references; dropped runnable demos and asset images |
+| aura-style-library (81 styles) | MengTo/Skills `5ea1661a` (`agent-skills/web-design`, `agent-skills/ui`) | MIT | none installed | each style's `SKILL.md` renamed `STYLE.md` and grouped under one skill with a generated `INDEX.md`; merged each style's `REFERENCES.md`, `ARTICLE.md` and `demo/PROMPT.md` into its `STYLE.md` (to stay under the 200-file account upload limit); kept `demo/preview.jpg`; dropped runnable demos and asset images |
 | gsap-core, gsap-timeline, gsap-scrolltrigger, gsap-plugins, gsap-react, gsap-performance | greensock/gsap-skills `aed9cfd3` | MIT | none | `gsap-utils` and `gsap-frameworks` not installed |
 | make-interfaces-feel-better | jakubkrehel/make-interfaces-feel-better `35545ea1` | MIT | none | dropped unused `agents/openai.yaml` |
 

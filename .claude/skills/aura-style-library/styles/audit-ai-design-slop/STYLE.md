@@ -28,7 +28,7 @@ Inspect the artifact available in the request:
 
 For every finding, cite a concrete location, component, behavior, or line of copy. Do not report a generic tendency without evidence in the artifact.
 
-For a full-page or full-site review, read [../no-ai-design-slop/ARTICLE.md](../no-ai-design-slop/ARTICLE.md) and use only the catalog sections relevant to the inspected artifact. Do not turn every checklist match into a finding. Group symptoms by root cause and report the highest-impact evidence.
+For a full-page or full-site review, read the **Article** section of [../no-ai-design-slop/STYLE.md](../no-ai-design-slop/STYLE.md) and use only the catalog sections relevant to the inspected artifact. Do not turn every checklist match into a finding. Group symptoms by root cause and report the highest-impact evidence.
 
 ## Classify Findings
 
@@ -137,3 +137,24 @@ Keep the report compact. Omit empty sections.
 - Do not describe an aesthetic as universally bad.
 - If the user explicitly asks for design swaps, place an optional replacement after the removal recommendation and keep it consistent with the existing system.
 - End with the single removal or correction that would produce the largest improvement.
+
+---
+
+## References
+
+- https://x.com/MengTo/status/2088894846429765755
+- https://x.com/GoogleDesign/status/2087195277094695096
+- https://www.youtube.com/watch?v=M4DNgmI7MIM
+- https://impeccable.style/slop
+- https://getdesign.md/
+- https://github.com/Leonxlnx/taste-skill
+- https://github.com/petergyang/no-ai-slop
+- https://github.com/MengTo/Skills
+- https://www.w3.org/WAI/WCAG22/quickref/
+- https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
+- https://www.w3.org/WAI/WCAG22/Understanding/reflow.html
+- https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+- https://www.nngroup.com/articles/ten-usability-heuristics/
+- https://m3.material.io/foundations/accessible-design/overview
+- https://developer.apple.com/design/human-interface-guidelines/typography
+- https://design-system.service.gov.uk/styles/typography/

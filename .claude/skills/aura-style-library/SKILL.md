@@ -19,8 +19,8 @@ section of https://www.aura.build/skills. See PROVENANCE.md in the design-discov
    artifact) together with the **Aura** link from the index so they can open
    the live version. Name what to notice in each one.
 3. **To build in a chosen style:** read `styles/<name>/STYLE.md` (visual
-   target, implementation guidance, patterns, pitfalls), then `PROMPT.md` and
-   `REFERENCES.md` if present. Combine with `frontend-design` for taste and
+   target, implementation guidance, patterns, pitfalls), then its **Recreate prompt**, **References** and
+   **Article** sections at the end, if present. Combine with `frontend-design` for taste and
    `ui-ux-pro-max` for the palette and font facts. Use one page style at a
    time, plus as many effects as the design needs.
 4. Save the chosen style name and its key tokens to

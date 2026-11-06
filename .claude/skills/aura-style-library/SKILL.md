@@ -7,7 +7,7 @@ description: Library of 81 named visual styles, effects, and page recipes from A
 
 Vetted copy of the web-design and UI skills from
 [MengTo/Skills](https://github.com/MengTo/Skills), which power the Skills
-section of https://www.aura.build/skills. See `../PROVENANCE.md`.
+section of https://www.aura.build/skills. See PROVENANCE.md in the design-discovery skill.
 
 ## How to use
 

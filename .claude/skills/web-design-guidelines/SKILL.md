@@ -13,7 +13,7 @@ Review files for compliance with Vercel's Web Interface Guidelines.
 
 ## How It Works
 
-1. Read the bundled rules in [guidelines.md](guidelines.md) (a reviewed, pinned snapshot; see `.claude/skills/PROVENANCE.md`).
+1. Read the bundled rules in [guidelines.md](guidelines.md) (a reviewed, pinned snapshot; see PROVENANCE.md in the design-discovery skill).
 2. Read the specified files (or ask the user for files/pattern).
 3. Check against all rules in the guidelines.
 4. Output findings in the terse `file:line` format the guidelines specify.

@@ -27,7 +27,7 @@ Always include an "I'm not sure - show me ideas" path.
 ## 2. If they are not sure: generate ideas they can see
 
 1. **Get 2-3 grounded directions.** Run the style engine for the product type:
-   `python3 -I .claude/skills/ui-ux-pro-max/scripts/search.py "<product> <industry> <mood>" --design-system -p "<name>"`
+   `python3 -I <ui-ux-pro-max skill folder>/scripts/search.py "<product> <industry> <mood>" --design-system -p "<name>"`
    Vary the query (mood words, `--variance`, `--density`) to get genuinely
    different directions, not three shades of one.
 2. **Show real-world references.**
@@ -81,6 +81,6 @@ Always include an "I'm not sure - show me ideas" path.
   question instead.
 - Install new design skills, plugins, MCP servers, or npm packages on the
   fly. New sources must be reviewed first and recorded in
-  `.claude/skills/PROVENANCE.md`.
+  `PROVENANCE.md` (kept in this skill and in `.claude/skills/` of the repo).
 - Use paid services (e.g. Aura MCP generation credits) without the user
   asking for it.

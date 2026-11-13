@@ -1,0 +1,589 @@
+======================================================================
+  MARQUEE DIGITAL SIGNAGE  -  START HERE
+  Read this file from top to bottom. Do one step at a time.
+======================================================================
+
+WHAT THIS IS
+------------
+Marquee lets you show pictures, videos, web pages and text messages on
+screens (your Android tablet, a TV connected to your Windows PC, etc.)
+and change them from anywhere using a website.
+
+It has 3 parts:
+
+  1. THE STUDIO  - a website where YOU manage everything
+                   (add screens, upload pictures, make playlists).
+  2. THE PLAYER  - a web page you open on each SCREEN. It shows your
+                   content full screen.
+  3. SUPABASE    - free online service that stores your pictures,
+                   playlists and screens. Think of it as the "brain".
+
+Cloudflare (also free) puts the studio and player on the internet so you
+can open them from any device.
+
+You do NOT need to know programming. You only copy, paste and click.
+
+Time needed: about 30 to 45 minutes the first time.
+
+What you need:
+  - A Windows PC with internet
+  - Your Supabase account (free)      https://supabase.com
+  - Your Cloudflare account (free)    https://dash.cloudflare.com
+  - The Android tablet
+  - ChatGPT (free) open in another browser tab, in case you get stuck
+
+
+======================================================================
+  PART A - SET UP CHATGPT AS YOUR HELPER  (do this first)
+======================================================================
+
+ChatGPT does not know anything about this project. The text below
+explains it. Paste it into ChatGPT ONCE at the start of a new chat.
+
+Step A1. Open https://chatgpt.com and start a NEW chat.
+
+Step A2. Copy everything between the two lines below (from
+         "----- COPY FROM HERE -----" to "----- COPY TO HERE -----")
+         and paste it into ChatGPT. Press Enter.
+
+----- COPY FROM HERE -----
+You are helping me set up and run "Marquee", a digital signage system I
+was given as a zip file. I am NOT a programmer. Please:
+- Give me ONE small step at a time and wait for me to say "done" or to
+  paste what I see.
+- Use simple words. Tell me exactly which button to click.
+- Website menus change over time. If a button I describe is missing, ask
+  me for a screenshot or for the exact text I see, instead of guessing.
+- Never ask me for passwords or for the Supabase "service_role" / "secret"
+  key. I must never put that key anywhere. The "anon" or "publishable"
+  key is safe and is the one this app uses.
+- Do NOT rewrite or "simplify" supabase/schema.sql. It contains security
+  rules that were tested. If you think something in it must change,
+  explain why first and give me the smallest possible change.
+- If you suggest a code change, give me the COMPLETE new content of the
+  file (not just a piece), and tell me the exact file path.
+
+HOW THE SYSTEM WORKS
+- Folder layout inside the zip folder "marquee":
+    START-HERE.txt          this guide
+    supabase/schema.sql     run once in the Supabase SQL Editor
+    web/                    the whole website; uploaded to Cloudflare Pages
+      index.html, studio.js, studio.css      = the STUDIO (admin site)
+      player/                                = the PLAYER (opened on screens)
+        index.html, player.js, player.css, sw.js (offline support),
+        manifest.webmanifest (lets Android "install" it full screen)
+      shared/config.js      the ONLY file I must edit: Supabase URL + anon key
+      shared/client.js, shared/schedule.js   shared code
+      shared/vendor/supabase-2.45.4.js       the Supabase JavaScript library
+      _headers              Cloudflare Pages header settings
+    windows/start-player.cmd       opens the player full screen in Microsoft Edge
+    windows/install-autostart.ps1  starts the player when Windows starts
+    tests/, package.json    developer tests (not needed to run it)
+    README.md               technical notes
+- It is a plain static website: no build step, no server code. Cloudflare
+  Pages only hosts the files in the "web" folder.
+- Supabase provides: login (Auth), the Postgres database, file storage
+  (a private bucket named "media"), and Realtime (live updates).
+- Studio address:  https://<my-site>.pages.dev/
+  Player address:  https://<my-site>.pages.dev/player/
+
+DATABASE (created by supabase/schema.sql)
+- Tables: admin_allowlist(email), assets (media: kind = image, video,
+  web, text), playlists, playlist_items (asset, position, duration_s,
+  optional days / start_time / end_time / start_date / end_date),
+  screens (name, playlist_id, rotation, fit, last_seen, status json,
+  content_version), pairings (6-letter codes), commands (reload, refresh,
+  identify, clear_cache).
+- Functions: is_admin(), device_start_pairing(), claim_screen(code, name),
+  device_heartbeat(status), device_ack_command(id).
+- Row Level Security is ON for every table. Only emails listed in
+  public.admin_allowlist can use the studio. Each screen can only read
+  its own playlist and media and can never change content.
+- Storage: private bucket "media"; files are stored as
+  "<owner user id>/<file id>.<ext>".
+
+HOW A SCREEN WORKS
+1. The player page signs in to Supabase ANONYMOUSLY (so "Allow anonymous
+   sign-ins" MUST be ON in Supabase), then shows a 6-letter code.
+2. In the studio I click "Add screen", type the code and a name.
+3. The player downloads the playlist and media, saves them on the device,
+   and plays them full screen. It keeps playing from the saved copy if
+   the internet goes down.
+4. It sends a status report every 30 seconds. The studio shows
+   ON AIR (seen in the last 75 s), NOT SEEN (up to 10 min) or OFFLINE.
+5. Changes reach screens instantly through Supabase Realtime, or within
+   15 seconds by polling if Realtime is not working.
+
+KNOWN MESSAGES AND WHAT THEY MEAN
+- "Setup needed ... placeholder values": web/shared/config.js was not
+  filled in, or the site was not uploaded again after editing it.
+- Player "Cannot sign in this player": anonymous sign-ins are OFF in
+  Supabase (Authentication > Sign In / Providers).
+- Studio "This account is not on the studio allowlist": run the SQL
+  shown on that page in the Supabase SQL Editor.
+- Studio "Could not check access ... Did you run supabase/schema.sql?":
+  the SQL file was not run, or the wrong Supabase project is in config.js.
+- Upload fails for big videos: the Supabase free plan limit is 50 MB per
+  file. Make the video smaller.
+- A web page item shows blank: that website does not allow being shown
+  inside other pages. Nothing can fix that from our side.
+
+Please reply "Ready" and then wait for my question. I will tell you which
+step of START-HERE.txt I am on.
+----- COPY TO HERE -----
+
+Step A3. ChatGPT should answer "Ready". Keep this chat open. Every time you
+         get stuck below, go back to this same chat.
+
+TIP: The free ChatGPT may forget things in a very long chat. If its
+answers start to make no sense, start a NEW chat and paste the text from
+Step A2 again.
+
+TIP: ChatGPT can look at screenshots. On Windows press
+Windows key + Shift + S, drag a box around the screen part, then press
+Ctrl + V in the ChatGPT message box.
+
+
+======================================================================
+  PART B - SET UP SUPABASE  (the "brain")
+======================================================================
+
+Step 1. Unzip the file.
+        Right-click the zip file > "Extract All..." > "Extract".
+        You now have a folder called "marquee". Remember where it is
+        (for example in Downloads).
+
+Step 2. Create a Supabase project.
+        a. Go to https://supabase.com/dashboard and log in.
+        b. Click "New project".
+        c. Name: marquee   (any name is fine)
+        d. Database password: click "Generate a password" and SAVE it
+           somewhere safe (you will rarely need it).
+        e. Region: choose the one closest to you.
+        f. Click "Create new project". Wait 1 to 2 minutes until it is ready.
+
+Step 3. Create the database tables (copy and paste the SQL file).
+        a. In the "marquee" folder open the "supabase" folder.
+        b. Right-click "schema.sql" > "Open with" > "Notepad".
+        c. In Notepad press Ctrl + A (select all), then Ctrl + C (copy).
+        d. In Supabase, in the left menu, click "SQL Editor".
+        e. Click "New query" (or the "+" button).
+        f. Click inside the big empty box and press Ctrl + V (paste).
+        g. Click "Run" (bottom right), or press Ctrl + Enter.
+        h. You should see "Success. No rows returned".
+           If Supabase shows a warning about "destructive operations",
+           click "Run this query" (the file only removes and re-creates
+           its own rules; it is safe).
+        If you see a red error: copy the error text and send it to
+        ChatGPT with PROMPT 3 (see Part G).
+
+Step 4. Turn ON anonymous sign-ins (screens need this).
+        a. Left menu: "Authentication".
+        b. Click "Sign In / Providers" (in some versions: "Providers" or
+           "Settings").
+        c. Find "Allow anonymous sign-ins" and switch it ON.
+        d. Click "Save" if there is a Save button.
+        Also check on the same page that "Email" sign-in is enabled
+        (it is ON by default).
+
+Step 5. Give YOUR email permission to use the studio.
+        a. Go back to "SQL Editor" > "New query".
+        b. Paste this line, but put YOUR real email between the quotes,
+           all in small letters:
+
+           insert into public.admin_allowlist (email) values ('your.email@example.com');
+
+        c. Click "Run". You should see "Success".
+
+Step 6. Copy your two Supabase keys (you need them in Step 8).
+        a. Left menu (bottom): "Project Settings" (gear icon).
+        b. Click "API Keys" (or "API").
+        c. Find the "Project URL". It looks like
+           https://abcdefghijklmnop.supabase.co
+           Copy it into Notepad for now.
+           (If you cannot see it on that page, look under
+           "Project Settings" > "Data API".)
+        d. Find the key called "anon" "public". It is a long text that
+           starts with "eyJ". It may be under a tab called
+           "Legacy API Keys". Copy it into Notepad too.
+           If there is no anon key, use the "Publishable key" instead
+           (it starts with "sb_publishable_").
+
+        !! NEVER copy the "service_role" key or the "Secret key".
+        !! Those must stay private. This app does not need them.
+
+
+======================================================================
+  PART C - CONNECT THE APP TO SUPABASE
+======================================================================
+
+Step 7. Open the settings file.
+        In the "marquee" folder go to: web > shared
+        Right-click "config.js" > "Open with" > "Notepad".
+
+Step 8. Put in your Supabase details.
+        You will see:
+
+          window.MARQUEE_CONFIG = {
+            supabaseUrl: "https://YOUR-PROJECT-REF.supabase.co",
+            supabaseAnonKey: "YOUR-ANON-OR-PUBLISHABLE-KEY",
+          };
+
+        Replace ONLY the text inside the quotes:
+          - https://YOUR-PROJECT-REF.supabase.co   > your Project URL (Step 6c)
+          - YOUR-ANON-OR-PUBLISHABLE-KEY           > your anon key (Step 6d)
+
+        Keep the quote marks, the comma at the end of each line and
+        everything else exactly as it is. It should look like this
+        (with your own values):
+
+          window.MARQUEE_CONFIG = {
+            supabaseUrl: "https://abcdefghijklmnop.supabase.co",
+            supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi...",
+          };
+
+        Press Ctrl + S to save. Close Notepad.
+
+
+======================================================================
+  PART D - PUT THE WEBSITE ON THE INTERNET WITH CLOUDFLARE
+======================================================================
+
+Step 9. Upload the "web" folder to Cloudflare Pages.
+        a. Go to https://dash.cloudflare.com and log in.
+        b. In the left menu click "Workers & Pages"
+           (sometimes under "Compute" or "Build").
+        c. Click "Create" (or "Create application").
+        d. Choose the "Pages" tab. If you only see Workers, look for a
+           link like "Looking to deploy Pages? Get started" and click it.
+        e. Choose "Upload assets" (also called "Direct Upload" or
+           "Drag and drop your files").
+        f. Project name: marquee-signage   (small letters and dashes only).
+           This becomes your web address: https://marquee-signage.pages.dev
+           If the name is taken, Cloudflare picks a slightly different
+           address. WRITE DOWN the address it shows you.
+        g. Click "Create project".
+        h. Drag the "web" folder (from inside the "marquee" folder) onto
+           the upload box. If Cloudflare asks for a folder, choose the
+           "web" folder.
+        i. Click "Deploy site". Wait until it says "Success".
+
+Step 10. Check the website works.
+        Open your address in the browser, for example
+        https://marquee-signage.pages.dev
+        You should see a dark panel saying "Every screen, from one desk."
+        and a sign-in form.
+
+        - If you see "404" or "Not found": the files were uploaded one
+          folder too deep. In Cloudflare, open the project > "Create
+          deployment" (or "Upload new version") > open the "web" folder
+          and select ALL the files and folders INSIDE it (Ctrl + A), then
+          drag those in instead of the "web" folder itself.
+        - If you see "Setup needed": Step 8 was not saved correctly, or
+          you uploaded before saving. Fix config.js, then upload again
+          (see Step 22).
+
+Step 11. Tell Supabase your website address.
+        a. Supabase > "Authentication" > "URL Configuration".
+        b. "Site URL": paste your Cloudflare address
+           (for example https://marquee-signage.pages.dev). Save.
+        This makes the confirmation email link open your studio.
+
+
+======================================================================
+  PART E - FIRST LOGIN AND YOUR FIRST SCREEN
+======================================================================
+
+Step 12. Create your studio account.
+        a. Open your studio address (https://marquee-signage.pages.dev).
+        b. Click "First time? Create the owner account".
+        c. Use the SAME email you added in Step 5, and a strong password
+           (at least 8 characters). Click "Create account".
+        d. If it says "Check your email for a confirmation link": open
+           your email, click the link, then come back and sign in.
+           (The email can take a few minutes. Check the spam folder.)
+        e. You should now see the "Screens" page.
+        If it says "This account is not on the studio allowlist", copy
+        the line it shows into Supabase SQL Editor and click Run (that
+        means the email in Step 5 was different), then click
+        "I've done it - check again".
+
+Step 13. (Recommended) Stop strangers creating accounts.
+        Supabase > Authentication > Sign In / Providers > Email:
+        turn OFF "Allow new users to sign up" (the wording may differ),
+        but leave "Allow anonymous sign-ins" ON.
+        If after this your screens show "Cannot sign in this player",
+        turn sign-ups back ON. Strangers still cannot use your studio
+        because of the allowlist.
+
+Step 14. Set up the Android tablet as a screen.
+        a. On the tablet open the Chrome browser.
+        b. Go to your player address, which is your site + /player/
+           for example: https://marquee-signage.pages.dev/player/
+        c. Tap the Chrome menu (three dots, top right) >
+           "Add to Home screen" or "Install app" > "Install"/"Add".
+        d. Go to the tablet's home screen and open the new "Marquee" icon.
+           It opens full screen and shows a big 6-letter code.
+
+Step 15. Pair the tablet.
+        a. On your PC, in the studio, click "Add screen".
+        b. Type the 6-letter code from the tablet.
+        c. Give it a name, for example "Front window".
+        d. Click "Pair screen". The tablet changes within a few seconds.
+
+Step 16. Add some content.
+        a. In the studio click "Media" (top).
+        b. Click "Choose files" and pick some pictures or videos from your
+           PC (or drag them onto the box).
+           Videos: use MP4 files under 50 MB. They play without sound.
+        c. Optional: click "Text slide" to make a message screen, or
+           "Web page" to show a website (must start with https://).
+
+Step 17. Make a playlist.
+        a. Click "Playlists" (top) > "New playlist".
+        b. Click the name "Playlist 1" to rename it if you want.
+        c. Click "Add media", tick the items you want, click "Add selected".
+        d. Change the number of seconds for each item if you want.
+           (Videos: 0 = play the whole video.)
+        e. Optional: click "Schedule" on an item to show it only on certain
+           days, times or dates. Click "Done".
+        f. Use the arrows to change the order.
+
+Step 18. Put the playlist on the screen.
+        a. Click "Screens" (top).
+        b. Under your screen, open the drop-down that says "No playlist"
+           and choose your playlist.
+        c. Within a few seconds the tablet shows your content.
+        d. Click "Identify" to make the tablet show its name (handy when
+           you have several screens).
+
+Step 19. Keep the tablet running all day.
+        On the tablet:
+        a. Keep it plugged into its charger.
+        b. Settings > Display > Screen timeout > choose the longest time.
+        c. Settings > Apps > Chrome > Battery > "Unrestricted"
+           (so Android does not pause it).
+        d. Optional, stops people leaving the app:
+           Settings > Security (or "Security & privacy" > "More") >
+           "App pinning" / "Pin windows" > ON. Then open Marquee, open the
+           recent apps view, tap the Marquee icon at the top > "Pin".
+        e. Optional: if you have "Developer options" turned on, switch on
+           "Stay awake" (screen stays on while charging).
+        Menu names differ between tablet brands. If you cannot find one,
+        ask ChatGPT with PROMPT 2 and tell it the tablet brand and model.
+
+
+======================================================================
+  PART F - OPTIONAL: USE THE WINDOWS PC AS A SCREEN TOO
+======================================================================
+
+Only do this if the Windows PC is connected to a TV or display that
+should show content.
+
+Step 20. Set your player address in the Windows script.
+        a. In the "marquee" folder open the "windows" folder.
+        b. Right-click "start-player.cmd" > "Edit" (or "Open with" > Notepad).
+        c. Find this line:
+              set PLAYER_URL=https://YOUR-SITE.pages.dev/player/
+           Change it to your player address, for example:
+              set PLAYER_URL=https://marquee-signage.pages.dev/player/
+        d. Ctrl + S to save. Close Notepad.
+        e. Double-click "start-player.cmd". The player opens full screen.
+           Pair it like Step 15. Press Alt + F4 to close it.
+           (If Windows shows "Windows protected your PC", click
+           "More info" > "Run anyway". It is the file you just edited.)
+
+Step 21. Make it start by itself when Windows starts.
+        a. Open the "windows" folder in File Explorer.
+        b. Click the address bar at the top, type  powershell  and press Enter.
+        c. In the blue window paste this and press Enter:
+              powershell -ExecutionPolicy Bypass -File .\install-autostart.ps1
+        d. It adds the player to Windows startup and stops the PC from
+           sleeping while plugged in.
+        To undo: press Windows key + R, type  shell:startup  and press
+        Enter, then delete "Marquee Player".
+
+
+======================================================================
+  PART G - READY-MADE PROMPTS FOR CHATGPT
+  (Paste the Part A text first in a new chat, then use these.)
+======================================================================
+
+PROMPT 1 - I am stuck on a step
+----- COPY FROM HERE -----
+I am on Step [WRITE THE STEP NUMBER] of START-HERE.txt.
+The step says to [WRITE WHAT THE STEP SAYS].
+What I see on my screen is: [DESCRIBE IT, OR PASTE A SCREENSHOT].
+What should I click next? Give me one small step at a time.
+----- COPY TO HERE -----
+
+PROMPT 2 - I cannot find a setting or button
+----- COPY FROM HERE -----
+I cannot find "[NAME OF THE BUTTON OR SETTING]" in [Supabase / Cloudflare /
+my Android tablet / Windows]. My device or website is: [e.g. Samsung
+Galaxy Tab A8, Android 14 / Supabase dashboard / Cloudflare dashboard].
+Here is a screenshot of what I see. Where is it now?
+----- COPY TO HERE -----
+
+PROMPT 3 - I got an error message
+----- COPY FROM HERE -----
+I got an error during Step [NUMBER] of START-HERE.txt.
+Where: [Supabase SQL Editor / Cloudflare / the studio website / the
+player on the tablet / Windows].
+The exact error text is:
+[PASTE THE ERROR HERE]
+What does it mean in simple words, and how do I fix it step by step?
+Do not change the security rules in schema.sql unless it is really needed.
+----- COPY TO HERE -----
+
+PROMPT 4 - A screen is not showing my content
+----- COPY FROM HERE -----
+My Marquee screen is not showing what I expect.
+In the studio "Screens" page the screen shows the status light:
+[ON AIR / NOT SEEN / OFFLINE], and "NOW SHOWING" says: [TEXT].
+The playlist assigned to it is: [NAME], with [NUMBER] items.
+On the screen itself I see: [DESCRIBE OR PASTE A PHOTO].
+Under the screen I clicked "..." (Settings) and the Diagnostics say:
+[COPY THE DIAGNOSTICS LINES HERE].
+Help me find the problem one step at a time.
+----- COPY TO HERE -----
+
+PROMPT 5 - I changed config.js or a file and need to put it online again
+----- COPY FROM HERE -----
+I changed a file in the "web" folder of Marquee and I need to upload the
+new version to my existing Cloudflare Pages project called
+[PROJECT NAME]. Walk me through uploading a new deployment with
+drag-and-drop in the Cloudflare dashboard, one step at a time.
+----- COPY TO HERE -----
+
+PROMPT 6 - I want to change how the app looks or works
+----- COPY FROM HERE -----
+I want to change Marquee so that: [DESCRIBE THE CHANGE IN SIMPLE WORDS].
+I will paste the file(s) you need; tell me which file(s) you want to see
+first. Then give me the COMPLETE new file content to replace it, and tell
+me exactly where the file is. Do not weaken the security rules. After
+that, remind me to upload the "web" folder to Cloudflare again (and, if
+you changed schema.sql, to run it again in the Supabase SQL Editor).
+----- COPY TO HERE -----
+
+PROMPT 7 - Explain something
+----- COPY FROM HERE -----
+In simple words, explain [e.g. what the "anon key" is / why my screen says
+NOT SEEN / what Row Level Security does / how the schedule works].
+----- COPY TO HERE -----
+
+Note: ChatGPT cannot open the zip itself. If it asks to see a file, open
+that file with Notepad, press Ctrl + A then Ctrl + C, and paste it into
+the chat. NEVER paste your passwords or the Supabase service_role key.
+
+
+======================================================================
+  PART H - EVERYDAY USE (after setup)
+======================================================================
+
+- Change what is on screen:   Studio > Media (add files) > Playlists
+                              (add/remove/reorder) > it updates on its own.
+- Different content per screen: make several playlists and choose one
+                              per screen on the Screens page.
+- Breakfast menu in the morning only: Playlists > item > Schedule >
+                              From 07:00 Until 11:00 > Done.
+- Portrait (standing) TV:     Screens > "..." > Rotation > Portrait > Save.
+- Picture has black bars:     Screens > "..." > Image fit >
+                              "Fill screen (crop)" > Save.
+- Screen seems stuck:         Screens > "..." > "Restart player".
+- Screen shows old content:   Screens > "..." > "Re-download content".
+- Remove a screen:            Screens > "..." > "Remove screen". The
+                              device goes back to showing a code.
+- Add another tablet or TV:   repeat Steps 14, 15 and 18 on that device.
+
+
+======================================================================
+  PART I - UPDATING THE WEBSITE LATER
+======================================================================
+
+Step 22. If you ever change any file inside the "web" folder (for example
+         config.js), you must upload it again:
+         Cloudflare > Workers & Pages > your project >
+         "Create deployment" (or "Upload new version") > drag the "web"
+         folder (or all files inside it, same as in Step 10) > Deploy.
+         Screens pick up the new version the next time they restart
+         (Screens > "..." > "Restart player").
+
+Step 23. If you ever get a NEW version of supabase/schema.sql, run it again
+         in the SQL Editor the same way as Step 3. Your screens, media and
+         playlists are kept.
+
+
+======================================================================
+  PART J - QUICK PROBLEM FIXER
+======================================================================
+
+PROBLEM                                   FIX
+-------                                   ---
+Website says "Setup needed"               config.js not filled in (Step 8)
+                                          or not uploaded again (Step 22).
+
+Tablet says "Cannot sign in this player"  Turn ON "Allow anonymous sign-ins"
+                                          (Step 4). If you turned off sign-ups
+                                          in Step 13, turn them back on.
+
+Studio: "not on the studio allowlist"     Run the line it shows in the
+                                          Supabase SQL Editor (Step 5).
+
+Studio: "Could not check access..."       The SQL file was not run (Step 3)
+                                          or config.js points to another
+                                          Supabase project.
+
+"Invalid login credentials"               Wrong email or password, or the
+                                          email is not confirmed yet
+                                          (check inbox/spam).
+
+No confirmation email arrives             Wait 10 minutes and check spam.
+                                          Free Supabase only sends a few
+                                          emails per hour. Ask ChatGPT
+                                          (PROMPT 2) how to turn off
+                                          "Confirm email" in Supabase
+                                          Authentication settings.
+
+Code on tablet is not accepted            Codes last 30 minutes. Close and
+                                          reopen the Marquee app for a new
+                                          code. Codes use letters and the
+                                          numbers 2-9 (never 0, O, 1 or I).
+
+Screen says "Nothing is scheduled"        The playlist is empty, or every
+                                          item has a Schedule that is not
+                                          active right now.
+
+Video upload fails                        File is over 50 MB. Make it smaller
+                                          (ask ChatGPT how to compress a
+                                          video for free on Windows).
+
+Web page item is blank                    That website blocks being shown
+                                          inside other pages. Use a
+                                          screenshot of it instead.
+
+Screen OFFLINE but tablet is on           Check the tablet's Wi-Fi. It keeps
+                                          playing saved content offline and
+                                          updates when the internet returns.
+
+Supabase project "paused"                 Free projects pause after about a
+                                          week with no use. Open the Supabase
+                                          dashboard and click "Restore".
+                                          Screens that are running keep it
+                                          active.
+
+Anything else                             Use PROMPT 3 or PROMPT 4 with
+                                          ChatGPT.
+
+
+======================================================================
+  SAFETY - PLEASE READ
+======================================================================
+- The "anon" / "publishable" key in config.js is meant to be public.
+  The security rules in the database protect your data.
+- NEVER share or paste anywhere: your Supabase "service_role"/"secret"
+  key, your database password, or your studio password.
+- Only emails you add to admin_allowlist (Step 5) can manage screens.
+- Free plan limits: 1 GB of stored media, 50 MB per file.
+
+That's it. Enjoy your screens!

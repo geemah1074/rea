@@ -1,5 +1,7 @@
 # Marquee: remote-managed digital signage
 
+> **Setting this up for the first time? Open [`START-HERE.txt`](START-HERE.txt).** It has every step in plain language, plus ready-made prompts for getting help from ChatGPT or another AI assistant.
+
 Marquee puts pictures, videos, web pages and text slides on TVs, tablets and PCs,
 and lets you change them from anywhere in a browser.
 

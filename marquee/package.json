@@ -1,0 +1,14 @@
+{
+  "name": "marquee-signage",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Remote-managed digital signage on Supabase + Cloudflare Pages",
+  "scripts": {
+    "test": "node --test tests/schema.test.js tests/schedule.test.js tests/e2e.test.js",
+    "deploy": "wrangler pages deploy web --project-name marquee-signage"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.2.17"
+  }
+}

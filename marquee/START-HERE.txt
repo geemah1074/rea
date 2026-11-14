@@ -270,8 +270,10 @@ Step 9. Upload the "web" folder to Cloudflare Pages.
         c. Click "Create" (or "Create application").
         d. Choose the "Pages" tab. If you only see Workers, look for a
            link like "Looking to deploy Pages? Get started" and click it.
-        e. Choose "Upload assets" (also called "Direct Upload" or
-           "Drag and drop your files").
+        e. You see "Get started" with two choices. Do NOT pick
+           "Import an existing Git repository". Pick the second one,
+           "Drag and drop your files", and click its "Get started" button.
+           (Older screens call this "Upload assets" or "Direct Upload".)
         f. Project name: marquee-signage   (small letters and dashes only).
            This becomes your web address: https://marquee-signage.pages.dev
            If the name is taken, Cloudflare picks a slightly different

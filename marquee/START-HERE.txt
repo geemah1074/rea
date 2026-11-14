@@ -160,7 +160,15 @@ Step 2. Create a Supabase project.
         d. Database password: click "Generate a password" and SAVE it
            somewhere safe (you will rarely need it).
         e. Region: choose the one closest to you.
-        f. Click "Create new project". Wait 1 to 2 minutes until it is ready.
+        f. Click "Create new project". Wait 2 to 3 minutes. Do not close
+           the page.
+        g. How to know it is ready: the "Setting up project" message is
+           gone and you see the project's home page with a menu on the
+           left (Table Editor, SQL Editor, Authentication...).
+           You will also see a green "Connect" button at the top.
+           You do NOT need to click "Connect" now. Just go to Step 3.
+           (Connect only shows connection details. It can help you find
+           your keys later in Step 6.)
 
 Step 3. Create the database tables (copy and paste the SQL file).
         a. In the "marquee" folder open the "supabase" folder.
@@ -208,6 +216,12 @@ Step 6. Copy your two Supabase keys (you need them in Step 8).
            "Legacy API Keys". Copy it into Notepad too.
            If there is no anon key, use the "Publishable key" instead
            (it starts with "sb_publishable_").
+
+        e. Can't find them? Click the "Connect" button at the top of
+           the project page. Look for a tab like "App Frameworks" or
+           "API Keys". It shows a Supabase URL (Project URL) and an
+           ANON or PUBLISHABLE key. Those are the two you need.
+           Close the box when done. You don't need anything else there.
 
         !! NEVER copy the "service_role" key or the "Secret key".
         !! Those must stay private. This app does not need them.
